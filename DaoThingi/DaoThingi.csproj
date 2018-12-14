@@ -44,11 +44,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CUstomer.cs" />
+    <Compile Include="SqlStatements\NotATableException.cs" />
+    <Compile Include="SqlStatements\SqlStatements.cs" />
+    <Compile Include="Person.cs" />
     <Compile Include="DAOAttribute.cs" />
     <Compile Include="Db.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reflection\Id.cs" />
+    <Compile Include="Reflection\Table.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
