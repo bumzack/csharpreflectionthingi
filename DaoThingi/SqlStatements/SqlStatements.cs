@@ -1,10 +1,7 @@
 ﻿using DaoThingi.Reflection;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DaoThingi.Database
 {
@@ -14,19 +11,19 @@ namespace DaoThingi.Database
         {
             Type t = obj.GetType();
 
-            Console.WriteLine("type of t = " + t.GetType().ToString() + ", name = " + t.Name);
+            //Console.WriteLine("type of t = " + t.GetType().ToString() + ", name = " + t.Name);
             List<string> props = new List<string>();
 
             foreach (Attribute att in t.GetCustomAttributes(true))
             {
                 if (att.GetType() == typeof(Table))
                 {
-                    Console.WriteLine("yeah - it is a table");
-                    Console.WriteLine("the table " + t.Name + " has the following properties:");
+                    //Console.WriteLine("yeah - it is a table");
+                    //Console.WriteLine("the table " + t.Name + " has the following properties:");
 
                     foreach (PropertyInfo p in t.GetProperties())
                     {
-                        Console.WriteLine("\t property name: " + p.Name + "m  propertyType() " + p.PropertyType.ToString());
+                        //Console.WriteLine("\t property name: " + p.Name + "m  propertyType() " + p.PropertyType.ToString());
                         props.Add(p.Name);
                     }
                 }

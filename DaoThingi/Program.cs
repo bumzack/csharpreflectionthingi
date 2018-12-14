@@ -16,10 +16,12 @@ namespace DaoThingi
             p.Id = 123;
 
             SqlStatements sql = new SqlStatements();
-
             string s = sql.Select<Person>(p);
+            Console.WriteLine("sql select for person : " + s);
 
-            Console.WriteLine("sql select: " + s);
+            Location l = new Location(34.12, 45.5, "WIen", "Niederösterreich");
+            string s1 = sql.Select<Location>(l);
+            Console.WriteLine("sql select for Location : " + s1);
 
             Console.ReadKey();
 

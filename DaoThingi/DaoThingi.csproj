@@ -44,11 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DomainObjects\Location.cs" />
     <Compile Include="SqlStatements\NotATableException.cs" />
     <Compile Include="SqlStatements\SqlStatements.cs" />
-    <Compile Include="Person.cs" />
-    <Compile Include="DAOAttribute.cs" />
-    <Compile Include="Db.cs" />
+    <Compile Include="DomainObjects\Person.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\Id.cs" />
