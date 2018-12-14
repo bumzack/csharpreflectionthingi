@@ -1,0 +1,7 @@
+C:\stoff\projekt\ReAttrTest\ReAttrTest\AntoherPropertyThingi\obj\Debug\AntoherPropertyThingi.csproj.CoreCompileInputs.cache
+C:\stoff\projekt\ReAttrTest\ReAttrTest\AntoherPropertyThingi\bin\Debug\AntoherPropertyThingi.exe.config
+C:\stoff\projekt\ReAttrTest\ReAttrTest\AntoherPropertyThingi\bin\Debug\AntoherPropertyThingi.exe
+C:\stoff\projekt\ReAttrTest\ReAttrTest\AntoherPropertyThingi\bin\Debug\AntoherPropertyThingi.pdb
+C:\stoff\projekt\ReAttrTest\ReAttrTest\AntoherPropertyThingi\obj\Debug\AntoherPropertyThingi.exe
+C:\stoff\projekt\ReAttrTest\ReAttrTest\AntoherPropertyThingi\obj\Debug\AntoherPropertyThingi.pdb
+C:\stoff\projekt\ReAttrTest\ReAttrTest\AntoherPropertyThingi\obj\Debug\AntoherPropertyThingi.csprojAssemblyReference.cache

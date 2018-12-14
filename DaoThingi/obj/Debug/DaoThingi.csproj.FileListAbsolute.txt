@@ -1,0 +1,7 @@
+C:\stoff\projekt\ReAttrTest\ReAttrTest\DaoThingi\obj\Debug\DaoThingi.csprojAssemblyReference.cache
+C:\stoff\projekt\ReAttrTest\ReAttrTest\DaoThingi\obj\Debug\DaoThingi.csproj.CoreCompileInputs.cache
+C:\stoff\projekt\ReAttrTest\ReAttrTest\DaoThingi\bin\Debug\DaoThingi.exe.config
+C:\stoff\projekt\ReAttrTest\ReAttrTest\DaoThingi\bin\Debug\DaoThingi.exe
+C:\stoff\projekt\ReAttrTest\ReAttrTest\DaoThingi\bin\Debug\DaoThingi.pdb
+C:\stoff\projekt\ReAttrTest\ReAttrTest\DaoThingi\obj\Debug\DaoThingi.exe
+C:\stoff\projekt\ReAttrTest\ReAttrTest\DaoThingi\obj\Debug\DaoThingi.pdb
