@@ -8,9 +8,10 @@ namespace DaoThingi.Reflection
         private string name; 
 
         // private string type; 
-        public Autowire()
+        public Autowire(string n)
         {
             Console.WriteLine("Constructor Attrbute Autowire");
+            this.Name = n;
         }
 
         public string Name
@@ -18,6 +19,10 @@ namespace DaoThingi.Reflection
             get
             {
                 return name;
+            }
+            set
+            {
+                name = value; 
             }
         }
     }

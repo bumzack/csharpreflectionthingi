@@ -45,6 +45,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DependencyInjection\Autowire.cs" />
+    <Compile Include="DependencyInjection\BeanCreationException.cs" />
+    <Compile Include="DependencyInjection\BeanException.cs" />
+    <Compile Include="DependencyInjection\BeanMultipleImplementationsFound.cs" />
+    <Compile Include="DependencyInjection\BeanNoImplementationFound.cs" />
+    <Compile Include="DependencyInjection\DuplicateBeanException.cs" />
     <Compile Include="DependencyInjection\GrgContext.cs" />
     <Compile Include="DependencyInjection\Injectable.cs" />
     <Compile Include="DomainObjects\Location.cs" />

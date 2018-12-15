@@ -33,34 +33,35 @@ namespace DaoThingi.DomainObjects
 
             GrgContext grgContext = new GrgContext(namespaces);
             Console.WriteLine("\n\n\n\nCOntext Data");
-            grgContext.ListClasses();
-            grgContext.ListInterfaces();
+            grgContext.ListBeans();
             grgContext.ListInjectables();
             grgContext.ListAutowire();
 
-            //  Car c1 = (Car)grgContext.GetBean("Car");
+            try
+            {
+                Car c = new Car("BMW", 2000);
+                c.Store();
+            }
+            catch (NullReferenceException e)
+            {
+                Console.WriteLine($"NUllreference Exception while calling c.Store() which was expected!  continuing");
+            }
 
-            //c1.Name = "Mercedes";
-            //c1.HorsePower = 12;
+            Console.WriteLine($"\n\n\n-------------------------------------------------------------------------------------------------");
 
-            //Console.WriteLine("car c1 = " + c1.ToString());
+            Console.WriteLine($"Get a car object with DI of a an IStorage implementation");
 
+            Car c1 = (Car)grgContext.GetBean("Car");
 
-            // Car c = new Car("BMW", 2000);
-            // c.Store();
+            c1.Name = "Mercedes";
+            c1.HorsePower = 12;
+            Console.WriteLine("car c1 = " + c1.ToString());
 
- 
-
-            //string s = ConfigurationManager.ConnectionStrings["WetrDbConnection"].ProviderName;
-
-            //DbProviderFactory dbProviderFactory = DbProviderFactories.GetFactory(s);
-
-
-            //Db d = new Db();
-            //DbCommand c = d.CreateSelectCommand(customer, dbProviderFactory, "table");
-
-            //Console.WriteLine(" c.CommandText   " + c.CommandText);
-
+            // Console.WriteLine($"calling c1.Store() -> this should work, because we've injected an object :-)");
+            c1.Store();
+            Console.WriteLine($"success c1.Store() - yeah!!! :-)");
+            Console.WriteLine($"-------------------------------------------------------------------------------------------------\n\n\n");
+        
             Console.ReadKey();
         }
     }

@@ -10,17 +10,15 @@ namespace DaoThingi.DependencyInjection
 {
     public class GrgContext
     {
-        private List<string> classes = new List<string>();
-        private List<string> injectables = new List<string>();
+        private SortedDictionary<string, string> beans = new SortedDictionary<string, string>();
+        private SortedDictionary<string, List<string>> injectables = new SortedDictionary<string, List<string>>();
 
-        private SortedDictionary<string, List<Type>> interfaces;
-
+        //private SortedDictionary<string, List<Type>> interfaces;
         private SortedDictionary<string, List<Type>> autowire;
-
 
         public GrgContext(IEnumerable<string> namespaces)
         {
-            interfaces = new SortedDictionary<string, List<Type>>();
+            //interfaces = new SortedDictionary<string, List<Type>>();
             autowire = new SortedDictionary<string, List<Type>>();
 
             IEnumerable<Type> allClasses = AppDomain.CurrentDomain.GetAssemblies()
@@ -29,37 +27,64 @@ namespace DaoThingi.DependencyInjection
 
             namespaces.ToList().ForEach(n =>
             {
-                allClasses.ToList().ForEach(t =>
+                allClasses.ToList().ForEach(c =>
                 {
-                    if (t.Namespace != null)
+                    if (c.Namespace != null)
                     {
-                        if (t.Namespace.Equals(n))
+                        if (c.Namespace.Equals(n))
                         {
-                            Console.WriteLine("Class t Name: " + t.Name + ", namespace: " + t.Namespace);
-                            classes.Add(t.Name);
+                            Console.WriteLine("Class t Name: " + c.Name + ", namespace: " + c.Namespace);
+                            if (beans.ContainsKey(c.Name))
+                            {
+                                throw new DuplicateBeanException($"Bean with name {c.Name} ({beans[c.Name]}) already exists. can't add {c.FullName}");
+                            }
+                            beans.Add(c.Name, c.FullName);
 
-                            foreach (var attribute in t.GetCustomAttributes())
+                            foreach (var attribute in c.GetCustomAttributes())
                             {
                                 if (attribute.GetType() == typeof(Injectable))
                                 {
-                                    injectables.Add(t.Name);
-                                    Console.WriteLine("Injectable found.  Name: " + t.Name);
-
-                                    foreach (var itype in t.GetInterfaces())
+                                    // check which interface the injectable implements or throw exception
+                                    foreach (var itype in c.GetInterfaces())
                                     {
-                                        Console.WriteLine("\t Injectable " + t.Name + " implements interface: " + itype.Name);
-                                        if (interfaces.ContainsKey(itype.FullName))
+                                        if (injectables.ContainsKey(itype.FullName))
                                         {
-                                            List<Type> types = interfaces[itype.FullName];
-                                            types.Add(itype);
+                                            List<string> types = injectables[itype.FullName];
+                                            types.Add(c.FullName);
                                         }
                                         else
                                         {
-                                            interfaces.Add(itype.FullName, new List<Type>());
-                                            List<Type> types = interfaces[itype.FullName];
-                                            types.Add(itype);
+                                            injectables.Add(itype.FullName, new List<string>());
+                                            List<string> types = injectables[itype.FullName];
+                                            types.Add(c.FullName);
                                         }
                                     }
+
+
+
+
+
+
+
+
+
+                                    Console.WriteLine("Injectable found.  Name: " + c.Name);
+
+                                    //foreach (var itype in c.GetInterfaces())
+                                    //{
+                                    //    Console.WriteLine("\t Injectable " + c.Name + " implements interface: " + itype.Name);
+                                    //    if (interfaces.ContainsKey(itype.FullName))
+                                    //    {
+                                    //        List<Type> types = interfaces[itype.FullName];
+                                    //        types.Add(itype);
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        interfaces.Add(itype.FullName, new List<Type>());
+                                    //        List<Type> types = interfaces[itype.FullName];
+                                    //        types.Add(itype);
+                                    //    }
+                                    //}
                                 }
                             }
                         }
@@ -115,21 +140,8 @@ namespace DaoThingi.DependencyInjection
                     }
                 });
             });
-        }
 
-        public void ListInterfaces()
-        {
-            Console.WriteLine("Interfaces: ");
-
-            foreach (KeyValuePair<string, List<Type>> entry in interfaces)
-            {
-                foreach (var t in entry.Value)
-                {
-                    Console.WriteLine("\t\tfully qualified name: " + entry.Key + "  interface name: " + t.Name);
-                }
-            }
-        }
-
+        } 
         public void ListAutowire()
         {
             Console.WriteLine("Autowire: ");
@@ -146,16 +158,21 @@ namespace DaoThingi.DependencyInjection
         public void ListInjectables()
         {
             Console.WriteLine("Injectables: ");
-            injectables.ToList().ForEach(i =>
+
+            foreach (KeyValuePair<string, List<string>> entry in injectables)
             {
-                Console.WriteLine("\t " + i);
-            });
+                foreach (var t in entry.Value)
+                {
+                    Console.WriteLine($"\t\t Class {t} implements  Interface: " + entry.Key);
+                }
+            }
+
         }
 
-        public void ListClasses()
+        public void ListBeans()
         {
-            Console.WriteLine("classes: ");
-            classes.ToList().ForEach(i =>
+            Console.WriteLine("beans: ");
+            beans.ToList().ForEach(i =>
             {
                 Console.WriteLine("\t " + i);
             });
@@ -163,8 +180,75 @@ namespace DaoThingi.DependencyInjection
 
         public object GetBean(string name)
         {
-            Type t = Type.GetType(name);
-            return Activator.CreateInstance(t);
+            Type t = Type.GetType(beans[name]);
+            object o = null;
+            try
+            {
+                o = Activator.CreateInstance(t);
+            }
+            catch (MissingMethodException e)
+            {
+                Console.WriteLine($"Error creating the bean {name} - empty constructor missing in class!");
+                throw new BeanCreationException($"Error creating the bean {name} - empty constructor missing in class!   original exception: {e.Message}");
+            }
+            foreach (var f in t.GetFields())
+            {
+                foreach (var a in f.GetCustomAttributes())
+                {
+                    if (a.GetType() == typeof(Autowire))
+                    {
+                        //Console.WriteLine($"'GetBean() name: {name}, fullname {t.FullName},   found fields with Attr 'Autowire'");
+                       // Console.WriteLine($"'GetBean() name: {name}, fullname {t.FullName},   fieldname: '{f.Name}',   fieldtype: {f.FieldType.ToString()}");
+                        var interfaceType = f.FieldType.ToString();
+                        List<string> interfaceImplementations = injectables[interfaceType];
+
+                        if (interfaceImplementations == null)
+                        {
+                            throw new BeanNoImplementationFound($"could not fina an implemention of interface {interfaceType} while constructing bean {name} for field {f.Name}");
+                        }
+
+                        string classFullName = null;
+                        if (interfaceImplementations.Count > 1)
+                        {
+                            Autowire aw = a as Autowire;
+                            if (aw == null)
+                            {
+                                throw new BeanException($"could not typecast attribute to 'Autowire': ");
+                            }
+                            if (aw.Name == null)
+                            {
+                                string s = string.Join(",", interfaceImplementations);
+                                throw new BeanMultipleImplementationsFoundException($"for field {f.Name}. multiple implementation for interface {interfaceType} found: '{s}', but no implementation specified with 'Name' selector  ");
+                            }
+                            if (!beans.ContainsKey(aw.Name))
+                            {
+                                throw new BeanNoImplementationFound($"for field {f.Name}. implementation of interface {interfaceType} specified in 'Name' not found. classname {aw.Name}");
+
+                            }
+                            classFullName = beans[aw.Name];
+                        }
+                        else
+                        {
+                            classFullName = interfaceImplementations[0];
+                        }
+
+                        Type ft = Type.GetType(classFullName);
+                        object b = null;
+                        try
+                        {
+                            b = Activator.CreateInstance(ft);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine($"error creating object classname  fullname: {classFullName}");
+                            throw new BeanCreationException($"error creating object  , fullname: {classFullName}, {e.Message}");
+                        }
+                        f.SetValue(o, b);
+                    }
+                }
+            }
+
+            return o;
         }
     }
 }

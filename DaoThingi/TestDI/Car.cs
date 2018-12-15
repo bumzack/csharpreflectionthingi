@@ -9,11 +9,14 @@ namespace DaoThingi.TestDI
 {
     public class Car
     {
-        [Autowire]
+        // here is the magic ...
+        [Autowire( "FileStorage")]
         public IStorage storage;
-
+        
         public string Name { get; set; }
         public int HorsePower { get; set; }
+
+        public Car() { }
 
         public Car(string n, int hp)
         {
