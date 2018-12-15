@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{47838A83-92C1-4D69-8993-FE395FD602FF}</ProjectGuid>
+    <ProjectGuid>{4E6168EE-86D6-453B-A1DF-91FDA7425183}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>DaoThingi</RootNamespace>
-    <AssemblyName>DaoThingi</AssemblyName>
+    <RootNamespace>MSDocs</RootNamespace>
+    <AssemblyName>MSDocs</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -34,7 +34,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -44,21 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DependencyInjection\Autowire.cs" />
-    <Compile Include="DependencyInjection\GrgContext.cs" />
-    <Compile Include="DependencyInjection\Injectable.cs" />
-    <Compile Include="DomainObjects\Location.cs" />
-    <Compile Include="SqlStatements\NotATableException.cs" />
-    <Compile Include="SqlStatements\SqlStatements.cs" />
-    <Compile Include="DomainObjects\Person.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reflection\Id.cs" />
-    <Compile Include="Reflection\Table.cs" />
-    <Compile Include="TestDI\Car.cs" />
-    <Compile Include="TestDI\NetworkStorage.cs" />
-    <Compile Include="TestDI\FileStorage.cs" />
-    <Compile Include="TestDI\IStorage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

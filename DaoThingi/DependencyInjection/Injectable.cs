@@ -2,15 +2,15 @@
 
 namespace DaoThingi.Reflection
 {
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
-    public class Id : Attribute
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+    public class Injectable : Attribute
     {
-        private string name; 
+        // private string name;
 
         // private string type; 
-        public Id()
+        public Injectable()
         {
-            Console.WriteLine("Constructor Attrbute Id");
+            Console.WriteLine("Constructor Attrbute Injectable");
         }
 
         //public string Name

@@ -1,0 +1,6 @@
+C:\stoff\projekt\ReAttrTest\ReAttrTest\MSDocs\bin\Debug\MSDocs.exe.config
+C:\stoff\projekt\ReAttrTest\ReAttrTest\MSDocs\bin\Debug\MSDocs.exe
+C:\stoff\projekt\ReAttrTest\ReAttrTest\MSDocs\bin\Debug\MSDocs.pdb
+C:\stoff\projekt\ReAttrTest\ReAttrTest\MSDocs\obj\Debug\MSDocs.csproj.CoreCompileInputs.cache
+C:\stoff\projekt\ReAttrTest\ReAttrTest\MSDocs\obj\Debug\MSDocs.exe
+C:\stoff\projekt\ReAttrTest\ReAttrTest\MSDocs\obj\Debug\MSDocs.pdb

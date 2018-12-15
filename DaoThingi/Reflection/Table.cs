@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DaoThingi.Reflection
-{ 
+{
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-    public class Table : System.Attribute
+    public class Table : Attribute
     {
         private string name; 
 

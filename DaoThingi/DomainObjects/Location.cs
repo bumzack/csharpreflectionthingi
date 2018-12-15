@@ -1,6 +1,6 @@
 ﻿using DaoThingi.Reflection;
 
-namespace DaoThingi
+namespace DaoThingi.DomainObjects
 {
     [Table]
     public class Location

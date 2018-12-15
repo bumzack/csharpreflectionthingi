@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28010.2048
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaoThingi", "DaoThingi\DaoThingi.csproj", "{47838A83-92C1-4D69-8993-FE395FD602FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSDocs", "MSDocs\MSDocs.csproj", "{4E6168EE-86D6-453B-A1DF-91FDA7425183}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{47838A83-92C1-4D69-8993-FE395FD602FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47838A83-92C1-4D69-8993-FE395FD602FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47838A83-92C1-4D69-8993-FE395FD602FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E6168EE-86D6-453B-A1DF-91FDA7425183}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E6168EE-86D6-453B-A1DF-91FDA7425183}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E6168EE-86D6-453B-A1DF-91FDA7425183}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E6168EE-86D6-453B-A1DF-91FDA7425183}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

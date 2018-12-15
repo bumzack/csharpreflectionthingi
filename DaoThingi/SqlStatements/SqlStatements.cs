@@ -34,48 +34,82 @@ namespace DaoThingi.Database
             }
 
             string sql = "SELECT " + string.Join(",", props) + " FROM " + t.Name;
-            return sql;  
-             
+            return sql;
+        }
 
-            //DAOAttribute dao;
-            //DbCommand cmd = factory.CreateCommand();
-            //DbParameter param;
-            //StringCollection Fields = new StringCollection();
-            //StringBuilder sbWhere = new StringBuilder(" WHERE ");
-            //bool HasCondition = false; //Indicates that there is a WHERE Condition
+        public string Insert (object obj)
+        {
+            Type t = obj.GetType();
 
-            //foreach (System.Reflection.MethodInfo mi in t.GetMethods()) //Go thru each method of the object
-            //{
-            //    foreach (Attribute att in Attribute.GetCustomAttributes(mi))  //Go thru the attributes for the method
-            //    {
-            //        if (typeof(DAOAttribute).IsAssignableFrom(att.GetType())) //Checks that the Attribute is of the right type
-            //        {
-            //            dao = (DAOAttribute)att;
-            //            Fields.Add(dao.DatabaseColumn); //Append the Fields 
+            //Console.WriteLine("type of t = " + t.GetType().ToString() + ", name = " + t.Name);
+            List<string> props = new List<string>();
+            List<object> values = new List<object>();
 
-            //            if (dao.PrimaryKey)
-            //            {
-            //                //Append the Conditions
+            foreach (Attribute att in t.GetCustomAttributes(true))
+            {
+                if (att.GetType() == typeof(Table))
+                {
+                    //Console.WriteLine("yeah - it is a table");
+                    //Console.WriteLine("the table " + t.Name + " has the following properties:");
 
-            //                if (HasCondition) sbWhere.Append(" AND ");
-            //                sbWhere.AppendFormat("{0} = @{0}", dao.DatabaseColumn);
-            //                param = factory.CreateParameter();
-            //                param.ParameterName = "@" + dao.DatabaseColumn;
-            //                if (cmd.Parameters.IndexOf(param.ParameterName) == 0)
-            //                {
-            //                    param.DbType = (DbType)Enum.Parse(typeof(DbType), dao.ValueType.Name);
-            //                    cmd.Parameters.Add(param);
-            //                    param.Value = mi.Invoke(cmd, null);
-            //                }
-            //                HasCondition = true; //Set the HasCondition flag to true
-            //            }
-            //        }
-            //    }
-            //}
-            //string[] arrField = new string[Fields.Count];
-            //Fields.CopyTo(arrField, 0);
-            //cmd.CommandText = "SELECT " + string.Join(",", arrField) + " FROM " + TableName + (HasCondition ? sbWhere.ToString() : " ");
-             
-         }
+                    foreach (PropertyInfo p in t.GetProperties())
+                    {
+                        //Console.WriteLine("\t property name: " + p.Name + "m  propertyType() " + p.PropertyType.ToString());
+                        props.Add(p.Name);
+                          values.Add(p.GetValue(obj));
+
+                        Console.WriteLine("\t property name: " + p.Name + "m  propertyType() " + p.PropertyType.ToString() +
+                            "  value: "+ p.GetValue(obj)); 
+                    }
+                }
+                else
+                {
+                    throw new NotATableException(t.Name + " is does not have  a 'Table' Attribute");
+                }
+            }
+
+            string sql = "INSERT INTO  " +t.Name +"("+ string.Join(",", props) +")" + " VALUES ";
+            sql += "(" + string.Join(",", values) + ")";
+
+            return sql;
+        }
+
+
+        public string CreateTable(object obj)
+        {
+            Type t = obj.GetType();
+
+            //Console.WriteLine("type of t = " + t.GetType().ToString() + ", name = " + t.Name);
+            List<string> props = new List<string>();
+            List<object> values = new List<object>();
+
+            foreach (Attribute att in t.GetCustomAttributes(true))
+            {
+                if (att.GetType() == typeof(Table))
+                {
+                    //Console.WriteLine("yeah - it is a table");
+                    //Console.WriteLine("the table " + t.Name + " has the following properties:");
+
+                    foreach (PropertyInfo p in t.GetProperties())
+                    {
+                        //Console.WriteLine("\t property name: " + p.Name + "m  propertyType() " + p.PropertyType.ToString());
+                        props.Add(p.Name);
+                        values.Add(p.GetValue(obj));
+
+                        Console.WriteLine("\t property name: " + p.Name + "m  propertyType() " + p.PropertyType.ToString() +
+                            "  value: " + p.GetValue(obj));
+                    }
+                }
+                else
+                {
+                    throw new NotATableException(t.Name + " is does not have  a 'Table' Attribute");
+                }
+            }
+
+            string sql = "INSERT INTO  " + t.Name + "(" + string.Join(",", props) + ")" + " VALUES ";
+            sql += "(" + string.Join(",", values) + ")";
+
+            return sql;
+        }
     }
 }
