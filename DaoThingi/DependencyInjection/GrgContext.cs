@@ -13,11 +13,15 @@ namespace DaoThingi.DependencyInjection
         private List<string> classes = new List<string>();
         private List<string> injectables = new List<string>();
 
-        private SortedDictionary<string, Type> interfaces; 
+        private SortedDictionary<string, List<Type>> interfaces;
+
+        private SortedDictionary<string, List<Type>> autowire;
+
 
         public GrgContext(IEnumerable<string> namespaces)
         {
-            interfaces = new SortedDictionary<string, Type>();
+            interfaces = new SortedDictionary<string, List<Type>>();
+            autowire = new SortedDictionary<string, List<Type>>();
 
             IEnumerable<Type> allClasses = AppDomain.CurrentDomain.GetAssemblies()
                         .SelectMany(t => t.GetTypes())
@@ -44,12 +48,22 @@ namespace DaoThingi.DependencyInjection
                                     foreach (var itype in t.GetInterfaces())
                                     {
                                         Console.WriteLine("\t Injectable " + t.Name + " implements interface: " + itype.Name);
-                                        interfaces.Add(itype.FullName, itype);
-                                    } 
+                                        if (interfaces.ContainsKey(itype.FullName))
+                                        {
+                                            List<Type> types = interfaces[itype.FullName];
+                                            types.Add(itype);
+                                        }
+                                        else
+                                        {
+                                            interfaces.Add(itype.FullName, new List<Type>());
+                                            List<Type> types = interfaces[itype.FullName];
+                                            types.Add(itype);
+                                        }
+                                    }
                                 }
-                            } 
+                            }
                         }
-                    } 
+                    }
                 });
             });
 
@@ -75,7 +89,19 @@ namespace DaoThingi.DependencyInjection
                                     {
                                         if (attr.GetType() == typeof(Autowire))
                                         {
-                                            Console.WriteLine(" AUTOWIRE FOUND  Class " + t.Name+ ", field  " + f.Name + " is autowired with fieldtype " + f.FieldType.FullName);
+                                            Console.WriteLine(" AUTOWIRE FOUND  Class " + t.Name + ", field  " + f.Name + " is autowired with fieldtype " + f.FieldType.FullName);
+
+                                            if (autowire.ContainsKey(t.FullName))
+                                            {
+                                                List<Type> types = autowire[t.FullName];
+                                                types.Add(t);
+                                            }
+                                            else
+                                            {
+                                                autowire.Add(t.FullName, new List<Type>());
+                                                List<Type> types = autowire[t.FullName];
+                                                types.Add(t);
+                                            }
                                         }
                                     }
                                 }
@@ -84,8 +110,8 @@ namespace DaoThingi.DependencyInjection
                                 //{
                                 //    Console.WriteLine("\t\t Injectable " + t.Name + " has attribute 'Autowire'");
                                 //}
-                            } 
-                        } 
+                            }
+                        }
                     }
                 });
             });
@@ -93,9 +119,27 @@ namespace DaoThingi.DependencyInjection
 
         public void ListInterfaces()
         {
-            foreach (KeyValuePair<string, Type> entry in interfaces)
+            Console.WriteLine("Interfaces: ");
+
+            foreach (KeyValuePair<string, List<Type>> entry in interfaces)
             {
-                Console.WriteLine("fully qualified name: " + entry.Key + "  value: " + entry.Value.FullName);
+                foreach (var t in entry.Value)
+                {
+                    Console.WriteLine("\t\tfully qualified name: " + entry.Key + "  interface name: " + t.Name);
+                }
+            }
+        }
+
+        public void ListAutowire()
+        {
+            Console.WriteLine("Autowire: ");
+
+            foreach (KeyValuePair<string, List<Type>> entry in autowire)
+            {
+                foreach (var t in entry.Value)
+                {
+                    Console.WriteLine("\t\tfully qualified name: " + entry.Key + "  autowire in class: " + t.Name);
+                }
             }
         }
 

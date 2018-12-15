@@ -32,24 +32,24 @@ namespace DaoThingi.DomainObjects
             namespaces.Add("DaoThingi.TestDI");
 
             GrgContext grgContext = new GrgContext(namespaces);
-
+            Console.WriteLine("\n\n\n\nCOntext Data");
             grgContext.ListClasses();
             grgContext.ListInterfaces();
             grgContext.ListInjectables();
+            grgContext.ListAutowire();
 
-            Car c1 = (Car)grgContext.GetBean("Car");
+            //  Car c1 = (Car)grgContext.GetBean("Car");
 
-            c1.Name = "Mercedes";
-            c1.HorsePower = 12;
+            //c1.Name = "Mercedes";
+            //c1.HorsePower = 12;
 
-            Console.WriteLine("car c1 = " + c1.ToString());
+            //Console.WriteLine("car c1 = " + c1.ToString());
 
 
-            Car c = new Car("BMW", 2000);
+            // Car c = new Car("BMW", 2000);
             // c.Store();
 
-            Console.ReadKey();
-
+ 
 
             //string s = ConfigurationManager.ConnectionStrings["WetrDbConnection"].ProviderName;
 
