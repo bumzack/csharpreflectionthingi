@@ -51,19 +51,31 @@
     <Compile Include="DependencyInjection\BeanNoImplementationFound.cs" />
     <Compile Include="DependencyInjection\DuplicateBeanException.cs" />
     <Compile Include="DependencyInjection\GrgContext.cs" />
+    <Compile Include="DependencyInjection\GrgScope.cs" />
     <Compile Include="DependencyInjection\Injectable.cs" />
     <Compile Include="DomainObjects\Location.cs" />
-    <Compile Include="SqlStatements\NotATableException.cs" />
-    <Compile Include="SqlStatements\SqlStatements.cs" />
+    <Compile Include="SqlThingis\Implementation\AdoTemplate.cs" />
+    <Compile Include="SqlThingis\Implementation\DefaultConnectionFactory.cs" />
+    <Compile Include="SqlThingis\Implementation\Logger.cs" />
+    <Compile Include="SqlThingis\Interface\IAdoTemplate.cs" />
+    <Compile Include="SqlThingis\Interface\IConnectionFactory.cs" />
+    <Compile Include="SqlThingis\Interface\ILogger.cs" />
+    <Compile Include="SqlThingis\Dao\PersonDao.cs" />
+    <Compile Include="SqlThingis\Dao\SqlDao.cs" />
+    <Compile Include="SqlThingis\NotATableException.cs" />
+    <Compile Include="SqlThingis\GrgParameter.cs" />
+    <Compile Include="SqlThingis\SqlStatements.cs" />
     <Compile Include="DomainObjects\Person.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\Id.cs" />
     <Compile Include="Reflection\Table.cs" />
     <Compile Include="TestDI\Car.cs" />
+    <Compile Include="TestDI\IWetrManager.cs" />
     <Compile Include="TestDI\NetworkStorage.cs" />
     <Compile Include="TestDI\FileStorage.cs" />
     <Compile Include="TestDI\IStorage.cs" />
+    <Compile Include="TestDI\WetrManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

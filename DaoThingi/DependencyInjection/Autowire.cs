@@ -5,7 +5,14 @@ namespace DaoThingi.Reflection
     [AttributeUsage(AttributeTargets.Field)]
     public class Autowire : Attribute
     {
-        private string name; 
+        private string name;
+
+        // private string type; 
+        public Autowire()
+        {
+            Console.WriteLine("Constructor Attrbute Autowire");
+            this.Name = "NOT specified";
+        }
 
         // private string type; 
         public Autowire(string n)

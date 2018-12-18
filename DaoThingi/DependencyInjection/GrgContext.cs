@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DaoThingi.DependencyInjection
 {
@@ -15,6 +13,14 @@ namespace DaoThingi.DependencyInjection
 
         //private SortedDictionary<string, List<Type>> interfaces;
         private SortedDictionary<string, List<Type>> autowire;
+
+        private SortedDictionary<string, string> BeansWithId = new SortedDictionary<string, string>();
+        private SortedDictionary<string, object> Singletons = new SortedDictionary<string, object>();
+
+    
+        public GrgContext()
+        {
+        }
 
         public GrgContext(IEnumerable<string> namespaces)
         {
@@ -58,40 +64,14 @@ namespace DaoThingi.DependencyInjection
                                             List<string> types = injectables[itype.FullName];
                                             types.Add(c.FullName);
                                         }
-                                    }
-
-
-
-
-
-
-
-
-
+                                    } 
                                     Console.WriteLine("Injectable found.  Name: " + c.Name);
-
-                                    //foreach (var itype in c.GetInterfaces())
-                                    //{
-                                    //    Console.WriteLine("\t Injectable " + c.Name + " implements interface: " + itype.Name);
-                                    //    if (interfaces.ContainsKey(itype.FullName))
-                                    //    {
-                                    //        List<Type> types = interfaces[itype.FullName];
-                                    //        types.Add(itype);
-                                    //    }
-                                    //    else
-                                    //    {
-                                    //        interfaces.Add(itype.FullName, new List<Type>());
-                                    //        List<Type> types = interfaces[itype.FullName];
-                                    //        types.Add(itype);
-                                    //    }
-                                    //}
-                                }
+   }
                             }
                         }
                     }
                 });
-            });
-
+            }); 
 
             // find all classes which have a ´field with an Autowire aatribute 
             Console.WriteLine("\n\n Searching for Autowire attributes ");
@@ -139,9 +119,11 @@ namespace DaoThingi.DependencyInjection
                         }
                     }
                 });
-            });
+            }); 
+        }
 
-        } 
+       
+
         public void ListAutowire()
         {
             Console.WriteLine("Autowire: ");
@@ -243,6 +225,116 @@ namespace DaoThingi.DependencyInjection
                             Console.WriteLine($"error creating object classname  fullname: {classFullName}");
                             throw new BeanCreationException($"error creating object  , fullname: {classFullName}, {e.Message}");
                         }
+                        f.SetValue(o, b);
+                    }
+                }
+            }
+
+            return o;
+        }
+
+        public void AddBean(string FullName, string BeanId, GrgScope scope)
+        {
+            //TODO check for existing beans
+            BeansWithId.Add(BeanId, FullName);
+            if (scope == GrgScope.Singleton)
+            {
+                try
+                {
+                    Singletons.Add(BeanId, GetBeanById(FullName));
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"error creating object    fullname: {  FullName}");
+                    throw new BeanCreationException($"error creating object  , fullname: {  FullName}, {e.Message}");
+                }
+            }
+        }
+
+         
+        public object GetBeanById(string BeanId)
+        {
+            if (!BeansWithId.ContainsKey(BeanId))
+            {
+                throw new BeanException($"bean with ID {BeanId} not found  - aborting");
+            }
+            if (Singletons.ContainsKey(BeanId))
+            {
+                return Singletons[BeanId];
+            }
+        
+            Type t = Type.GetType(BeansWithId[BeanId]);
+            object o = null;
+            try
+            {
+                o = Activator.CreateInstance(t);
+            }
+            catch (MissingMethodException e)
+            {
+                Console.WriteLine($"Error creating the bean ID {BeanId} - empty constructor missing in class!");
+                throw new BeanCreationException($"Error creating the bean ID  {BeanId} - empty constructor missing in class!   original exception: {e.Message}");
+            }
+
+            foreach (var f in t.GetFields())
+            {
+                foreach (var a in f.GetCustomAttributes())
+                {
+                    if (a.GetType() == typeof(Autowire))
+                    {
+                        //Console.WriteLine($"'GetBean() name: {name}, fullname {t.FullName},   found fields with Attr 'Autowire'");
+                        // Console.WriteLine($"'GetBean() name: {name}, fullname {t.FullName},   fieldname: '{f.Name}',   fieldtype: {f.FieldType.ToString()}");
+                        var interfaceType = f.FieldType.ToString();
+                        List<string> interfaceImplementations = injectables[interfaceType];
+
+                        if (interfaceImplementations == null)
+                        {
+                            throw new BeanNoImplementationFound($"could not fina an implemention of interface {interfaceType} while constructing bean ID {BeanId} for field {f.Name}");
+                        }
+
+                        string classFullName = null;
+                        if (interfaceImplementations.Count > 1)
+                        {
+                            Autowire aw = a as Autowire;
+                            if (aw == null)
+                            {
+                                throw new BeanException($"could not typecast attribute to 'Autowire': ");
+                            }
+                            if (aw.Name == null)
+                            {
+                                string s = string.Join(",", interfaceImplementations);
+                                throw new BeanMultipleImplementationsFoundException($"for field {f.Name}. multiple implementation for interface {interfaceType} found: '{s}', but no implementation specified with 'Name' selector  ");
+                            }
+                            if (!beans.ContainsKey(aw.Name))
+                            {
+                                throw new BeanNoImplementationFound($"for field {f.Name}. implementation of interface {interfaceType} specified in 'Name' not found. classname {aw.Name}");
+
+                            }
+                            classFullName = beans[aw.Name];
+                        }
+                        else
+                        {
+                            classFullName = interfaceImplementations[0];
+                        }
+
+                        Type ft = Type.GetType(classFullName);
+                        object b = null;
+                        if (Singletons.ContainsKey(classFullName))
+                        {
+                            b = Singletons[classFullName];
+                        }
+                        else
+                        {
+                            try
+                            {
+                                b = Activator.CreateInstance(ft);
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine($"error creating object classname  fullname: {classFullName}");
+                                throw new BeanCreationException($"error creating object  , fullname: {classFullName}, {e.Message}");
+                            }
+                        }
+                        
                         f.SetValue(o, b);
                     }
                 }

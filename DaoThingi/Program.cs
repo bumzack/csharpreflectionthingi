@@ -2,13 +2,41 @@
 using System.Collections.Generic;
 using DaoThingi.Database;
 using DaoThingi.DependencyInjection;
+using DaoThingi.SqlThingis.Dao;
 using DaoThingi.TestDI;
-
+ 
 namespace DaoThingi.DomainObjects
 {
     class Program
     {
         static void Main(string[] args)
+        { 
+            List<string> namespaces = new List<string>();
+            namespaces.Add("DaoThingi.DomainObjects");
+            namespaces.Add("DaoThingi.TestDI");
+
+            GrgContext grgContext = new GrgContext();
+            grgContext.AddBean("DaoThingi.SqlThingis.Implementation.Logger", "myLogger", GrgScope.Singleton);
+            grgContext.AddBean("DaoThingi.SqlThingis.Implementation.AdoTemplate", "myAdoTemplate", GrgScope.Singleton);
+            grgContext.AddBean("DaoThingi.SqlThingis.Implementation.DefaultConnectionFactory", "myDefaultConnectionFactory", GrgScope.Singleton);
+            grgContext.AddBean("DaoThingi.DomainObjects.Person", "myPerson", GrgScope.Prototype);
+            grgContext.AddBean("DaoThingi.SqlThingis.Dao.PersonDao", "myPersonDao", GrgScope.Singleton);
+
+          
+
+            Console.WriteLine("\n\n\n\nCOntext Data");
+            grgContext.ListBeans();
+            grgContext.ListInjectables();
+            grgContext.ListAutowire();
+
+
+            PersonDao personDao = (PersonDao) grgContext.GetBeanById("myPersonDao");
+
+
+        }
+
+
+        static void Main1(string[] args)
         {
             Person p = new Person();
 
@@ -25,7 +53,6 @@ namespace DaoThingi.DomainObjects
             Console.WriteLine("sql select for Location : " + s1);
 
             Console.WriteLine("sql insert for Location : " + sql.Insert(l));
-
 
             List<string> namespaces = new List<string>();
             namespaces.Add("DaoThingi.DomainObjects");
@@ -44,7 +71,7 @@ namespace DaoThingi.DomainObjects
             }
             catch (NullReferenceException e)
             {
-                Console.WriteLine($"NUllreference Exception while calling c.Store() which was expected!  continuing");
+                Console.WriteLine($"NUllreference Exception while calling c.Store() which was expected!  continuing {e.Message}");
             }
 
             Console.WriteLine($"\n\n\n-------------------------------------------------------------------------------------------------");
@@ -61,7 +88,7 @@ namespace DaoThingi.DomainObjects
             c1.Store();
             Console.WriteLine($"success c1.Store() - yeah!!! :-)");
             Console.WriteLine($"-------------------------------------------------------------------------------------------------\n\n\n");
-        
+
             Console.ReadKey();
         }
     }
